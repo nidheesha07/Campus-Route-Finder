@@ -19,17 +19,24 @@
                 <p class="error-message">{{ error }}</p>
             {% endif %}
 
-            <form method="POST" action="{{ url_for('login') }}">
+            {% if success %}
+                <p class="success-message">{{ success }}</p>
+            {% endif %}
+
+            <form method="POST" action="{{ url_for('login') }}" autocomplete="off">
                 <label for="username">Username</label>
-                <input type="text" id="username" name="username" placeholder="Enter any username">
+                <input type="text" id="username" name="username" placeholder="Enter your username" autocomplete="off">
 
                 <label for="password">Password</label>
-                <input type="password" id="password" name="password" placeholder="Enter any password">
+                <input type="password" id="password" name="password" placeholder="Enter your password" autocomplete="off">
 
                 <button type="submit" class="primary-button">Log In</button>
             </form>
 
-            <p class="hint-text">This is a demo login. Any username and password will work.</p>
+            <p class="hint-text">
+                Don't have an account?
+                <a href="{{ url_for('register') }}">Create one here</a>
+            </p>
         </div>
     </div>
 

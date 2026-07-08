@@ -6,11 +6,28 @@
     box-sizing: border-box;
 }
 
+
+
 body {
-    font-family: 'Poppins', sans-serif;
-    background: linear-gradient(135deg, #1f4037, #99f2c8);
-    min-height: 100vh;
+    background: linear-gradient(135deg, #6bb0c4, #6bb0c4);
 }
+
+.container {
+    background: #FFFFFF;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0,0,0,.18);
+}
+
+button {
+    background: #0097A7;
+    color: white;
+}
+
+button:hover {
+    background: #006064;
+}
+
+
 
 .page-center {
     min-height: 100vh;
@@ -21,7 +38,7 @@ body {
 }
 
 .card {
-    background: #ffffff;
+    background: #c9e7f5;
     border-radius: 16px;
     padding: 40px;
     width: 100%;
@@ -184,4 +201,13 @@ input:focus, select:focus {
     border-radius: 50%;
     margin-right: 6px;
     vertical-align: middle;
+}
+
+.success-message {
+    background: #e3f9ec;
+    color: #8669d8;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 13px;
+    margin-bottom: 10px;
 }

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Campus Route Finder - Create Account</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="page-center">
+        <div class="card">
+            <div class="app-header">
+                <span class="app-icon">📝</span>
+                <h1>Create Your Account</h1>
+                <p class="tagline">It only takes a few seconds.</p>
+            </div>
+
+            {% if error %}
+                <p class="error-message">{{ error }}</p>
+            {% endif %}
+
+            <form method="POST" action="{{ url_for('register') }}" autocomplete="off">
+                <label for="username">Choose a Username</label>
+                <input type="text" id="username" name="username" placeholder="e.g. student1" autocomplete="off">
+
+                <label for="password">Choose a Password</label>
+                <input type="password" id="password" name="password" placeholder="Enter a password" autocomplete="off">
+
+                <label for="confirm_password">Confirm Password</label>
+                <input type="password" id="confirm_password" name="confirm_password" placeholder="Re-enter the same password" autocomplete="off">
+
+                <button type="submit" class="primary-button">Create Account</button>
+            </form>
+
+            <p class="hint-text">
+                Already have an account?
+                <a href="{{ url_for('login') }}">Log in here</a>
+            </p>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

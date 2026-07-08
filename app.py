@@ -1,13 +1,15 @@
 # app.py
 # This is the main Flask application. It controls:
-# 1. The login page
-# 2. The location selection page
-# 3. The map page that shows the shortest route
+# 1. The registration page (create account)
+# 2. The login page
+# 3. The location selection page
+# 4. The map page that shows the shortest route
 
 from flask import Flask, render_template, request, redirect, session, url_for
 
 from graph import CAMPUS_LOCATIONS, CAMPUS_EDGES, build_graph
 from dijkstra import find_shortest_path
+from users import username_exists, create_user, check_login
 
 app = Flask(__name__)
 
@@ -23,9 +25,38 @@ def home():
     return redirect(url_for("login"))
 
 
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    error = None
+
+    if request.method == "POST":
+        username = request.form.get("username", "").strip()
+        password = request.form.get("password", "").strip()
+        confirm_password = request.form.get("confirm_password", "").strip()
+
+        if username == "" or password == "":
+            error = "Please fill in every field."
+        elif password != confirm_password:
+            error = "Passwords do not match."
+        elif username_exists(username):
+            error = "That username is already taken. Try another one."
+        else:
+            create_user(username, password)
+            # Send them to the login page with a success message,
+            # so they log in with the account they just created.
+            return redirect(url_for("login", registered="1"))
+
+    return render_template("register.html", error=error)
+
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
     error = None
+    success = None
+
+    # If we just arrived here after registering, show a success message.
+    if request.args.get("registered") == "1":
+        success = "Account created! Please log in below."
 
     if request.method == "POST":
         username = request.form.get("username", "").strip()
@@ -33,13 +64,13 @@ def login():
 
         if username == "" or password == "":
             error = "Please enter both a username and a password."
-        else:
-            # This is a simple "demo" login: any non-empty username
-            # and password is accepted. We just remember the username.
+        elif check_login(username, password):
             session["username"] = username
             return redirect(url_for("locations"))
+        else:
+            error = "Incorrect username or password. Please try again, or create an account."
 
-    return render_template("login.html", error=error)
+    return render_template("login.html", error=error, success=success)
 
 
 @app.route("/locations", methods=["GET", "POST"])
