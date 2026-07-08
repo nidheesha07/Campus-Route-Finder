@@ -1,0 +1,11 @@
+<header class="top-header">
+    <div class="header-left">
+        <span class="header-logo">🎓</span>
+        <span class="header-title">Campus Route Finder</span>
+    </div>
+    <div class="header-right">
+        <a href="{{ url_for('history_page') }}" class="header-link">🕑 History</a>
+        <span class="header-account">👤 {{ username }}</span>
+        <a href="{{ url_for('logout') }}" class="header-link">🚪 Logout</a>
+    </div>
+</header>
