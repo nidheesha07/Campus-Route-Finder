@@ -4,12 +4,14 @@
 # 2. The login page
 # 3. The location selection page
 # 4. The map page that shows the shortest route
+# 5. The history page that shows past route searches
 
 from flask import Flask, render_template, request, redirect, session, url_for
 
 from graph import CAMPUS_LOCATIONS, CAMPUS_EDGES, build_graph
 from dijkstra import find_shortest_path
 from users import username_exists, create_user, check_login
+from history import add_history, get_history
 
 app = Flask(__name__)
 
@@ -114,6 +116,13 @@ def map_page():
     graph = build_graph()
     path, total_distance = find_shortest_path(graph, start, end)
 
+    start_name = CAMPUS_LOCATIONS[start]["name"]
+    end_name = CAMPUS_LOCATIONS[end]["name"]
+
+    # If a path was found, save this search to the user's history.
+    if path:
+        add_history(session["username"], start_name, end_name, total_distance)
+
     # Build a list of "point_a-point_b" strings for every step of the path.
     # We add both directions because a connection can be drawn either way.
     path_edges = []
@@ -132,8 +141,22 @@ def map_page():
         path=path or [],
         path_edges=path_edges,
         total_distance=total_distance,
-        start_name=CAMPUS_LOCATIONS[start]["name"],
-        end_name=CAMPUS_LOCATIONS[end]["name"],
+        start_name=start_name,
+        end_name=end_name,
+    )
+
+
+@app.route("/history")
+def history_page():
+    if "username" not in session:
+        return redirect(url_for("login"))
+
+    entries = get_history(session["username"])
+
+    return render_template(
+        "history.html",
+        username=session["username"],
+        entries=entries,
     )
 
 

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Campus Route Finder - History</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    {% include 'header.html' %}
+
+    <div class="page-center">
+        <div class="card map-card">
+            <div class="app-header">
+                <span class="app-icon">🕑</span>
+                <h1>Your Route History</h1>
+                <p class="tagline">Routes you've looked up before.</p>
+            </div>
+
+            {% if entries %}
+                <div class="history-list">
+                    {% for entry in entries %}
+                        <div class="history-item">
+                            <div class="history-route">{{ entry.start_name }} → {{ entry.end_name }}</div>
+                            <div class="history-meta">{{ entry.distance }} meters &middot; {{ entry.timestamp }}</div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="hint-text">You haven't searched for any routes yet.</p>
+            {% endif %}
+
+            <a class="secondary-button" href="{{ url_for('locations') }}">Find a New Route</a>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

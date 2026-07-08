@@ -211,3 +211,74 @@ input:focus, select:focus {
     font-size: 13px;
     margin-bottom: 10px;
 }
+
+.top-header {
+    width: 100%;
+    background: #1f4037;
+    color: white;
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    font-size: 16px;
+}
+
+.header-logo {
+    font-size: 20px;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    font-size: 13px;
+}
+
+.header-link {
+    color: #eafaf3;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.header-link:hover {
+    text-decoration: underline;
+}
+
+.header-account {
+    background: rgba(255, 255, 255, 0.15);
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-weight: 600;
+}
+
+.history-list {
+    text-align: left;
+    margin-top: 10px;
+}
+
+.history-item {
+    background: #f4faf7;
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-bottom: 10px;
+}
+
+.history-route {
+    font-weight: 600;
+    color: #1f4037;
+    font-size: 14px;
+}
+
+.history-meta {
+    font-size: 12px;
+    color: #777;
+    margin-top: 4px;
+}
