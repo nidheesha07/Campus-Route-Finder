@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Campus Route Finder - Choose Locations</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="page-center">
+        <div class="card">
+            <div class="app-header">
+                <span class="app-icon">📍</span>
+                <h1>Where are you headed?</h1>
+                <p class="tagline">Welcome, {{ username }}! Choose your start and destination.</p>
+            </div>
+
+            {% if error %}
+                <p class="error-message">{{ error }}</p>
+            {% endif %}
+
+            <form method="POST" action="{{ url_for('locations') }}">
+                <label for="start">Starting Point</label>
+                <select id="start" name="start">
+                    {% for location_id, location in locations.items() %}
+                        <option value="{{ location_id }}">{{ location.name }}</option>
+                    {% endfor %}
+                </select>
+
+                <label for="end">Destination</label>
+                <select id="end" name="end">
+                    {% for location_id, location in locations.items() %}
+                        <option value="{{ location_id }}">{{ location.name }}</option>
+                    {% endfor %}
+                </select>
+
+                <button type="submit" class="primary-button">Show Route on Map</button>
+            </form>
+
+            <a class="logout-link" href="{{ url_for('logout') }}">Log out</a>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

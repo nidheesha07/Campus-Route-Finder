@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Campus Route Finder - Map</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="page-center">
+        <div class="card map-card">
+            <div class="app-header">
+                <span class="app-icon">🗺️</span>
+                <h1>Your Route</h1>
+                {% if total_distance is not none %}
+                    <p class="tagline">{{ start_name }} → {{ end_name }} : {{ total_distance }} meters</p>
+                {% else %}
+                    <p class="tagline">No path could be found between these locations.</p>
+                {% endif %}
+            </div>
+
+            <svg viewBox="0 0 700 500" class="campus-map">
+                <!-- Draw all connections (lines) first, so circles sit on top -->
+                {% for point_a, point_b, distance in edges %}
+                    {% set is_path_edge = (point_a + '-' + point_b) in path_edges %}
+                    <line
+                        x1="{{ locations[point_a].x }}" y1="{{ locations[point_a].y }}"
+                        x2="{{ locations[point_b].x }}" y2="{{ locations[point_b].y }}"
+                        class="{{ 'path-line' if is_path_edge else 'map-line' }}"
+                    />
+                {% endfor %}
+
+                <!-- Draw all locations (circles and labels) -->
+                {% for location_id, location in locations.items() %}
+                    {% set is_path_node = location_id in path %}
+                    <circle
+                        cx="{{ location.x }}" cy="{{ location.y }}" r="14"
+                        class="{{ 'path-node' if is_path_node else 'map-node' }}"
+                    />
+                    <text x="{{ location.x }}" y="{{ location.y - 20 }}" class="map-label">
+                        {{ location.name }}
+                    </text>
+                {% endfor %}
+            </svg>
+
+            <div class="legend">
+                <span><span class="legend-dot path-node"></span> On your route</span>
+                <span><span class="legend-dot map-node"></span> Other location</span>
+            </div>
+
+            <a class="secondary-button" href="{{ url_for('locations') }}">Choose Different Locations</a>
+            <a class="logout-link" href="{{ url_for('logout') }}">Log out</a>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
