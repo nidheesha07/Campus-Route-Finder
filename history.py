@@ -1,93 +1,79 @@
 # history.py
-# This file saves and loads each user's route search history.
-# History is stored in a simple file called history.json,
-# using the same simple approach as users.py.
+# This file saves and loads each user's route search history, using
+# the SQLite database (see database.py) instead of a JSON file.
 
-import json
-import os
 import uuid
+import sqlite3
 from datetime import datetime
 
-HISTORY_FILE = "history.json"
-
-
-def load_history():
-    """
-    Reads everyone's history from history.json and returns it as a
-    dictionary, e.g. {"student1": [ {...}, {...} ]}
-    If the file doesn't exist yet, returns an empty dictionary.
-    """
-    if not os.path.exists(HISTORY_FILE):
-        return {}
-
-    with open(HISTORY_FILE, "r") as file:
-        return json.load(file)
-
-
-def save_history(history):
-    """Saves the given history dictionary back to history.json."""
-    with open(HISTORY_FILE, "w") as file:
-        json.dump(history, file, indent=2)
+from database import get_connection
 
 
 def add_history(username, start_name, end_name, distance):
     """
-    Adds one route search to a user's history.
-    The newest entry is always placed first in the list.
-    Each entry gets its own unique "id" so it can be deleted later.
+    Adds one route search to the history table.
+    Each entry gets its own unique id, so it can be deleted later.
     """
-    history = load_history()
+    conn = get_connection()
+    cursor = conn.cursor()
 
-    if username not in history:
-        history[username] = []
+    entry_id = uuid.uuid4().hex
+    timestamp = datetime.now().strftime("%d %b %Y, %I:%M %p")
 
-    entry = {
-        "id": uuid.uuid4().hex,
-        "start_name": start_name,
-        "end_name": end_name,
-        "distance": distance,
-        "timestamp": datetime.now().strftime("%d %b %Y, %I:%M %p"),
-    }
+    cursor.execute(
+        """
+        INSERT INTO history (id, username, start_name, end_name, distance, timestamp)
+        VALUES (?, ?, ?, ?, ?, ?)
+        """,
+        (entry_id, username, start_name, end_name, distance, timestamp),
+    )
 
-    history[username].insert(0, entry)
-    save_history(history)
+    conn.commit()
+    conn.close()
 
 
 def get_history(username):
     """
     Returns the list of past routes for one user, newest first.
-
-    Older entries that were saved before the delete feature existed
-    won't have an "id" yet. This function checks for that and gives
-    them one automatically, so every entry can always be deleted.
+    Each entry is returned as a dictionary, the same shape the
+    HTML templates already expect.
     """
-    history = load_history()
-    entries = history.get(username, [])
+    conn = get_connection()
+    conn.row_factory = sqlite3.Row  # lets us access columns by name
+    cursor = conn.cursor()
 
-    needs_saving = False
-    for entry in entries:
-        if "id" not in entry:
-            entry["id"] = uuid.uuid4().hex
-            needs_saving = True
+    cursor.execute(
+        """
+        SELECT id, start_name, end_name, distance, timestamp
+        FROM history
+        WHERE username = ?
+        ORDER BY rowid DESC
+        """,
+        (username,),
+    )
+    rows = cursor.fetchall()
+    conn.close()
 
-    if needs_saving:
-        history[username] = entries
-        save_history(history)
+    entries = []
+    for row in rows:
+        entries.append({
+            "id": row["id"],
+            "start_name": row["start_name"],
+            "end_name": row["end_name"],
+            "distance": row["distance"],
+            "timestamp": row["timestamp"],
+        })
 
     return entries
 
 
 def delete_history(username, entry_id):
-    """
-    Removes one specific route from a user's history by its id.
-    If the id isn't found, nothing happens.
-    """
-    history = load_history()
-
-    if username not in history:
-        return
-
-    history[username] = [
-        entry for entry in history[username] if entry["id"] != entry_id
-    ]
-    save_history(history)
+    """Removes one specific route from the database by its id."""
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute(
+        "DELETE FROM history WHERE id = ? AND username = ?",
+        (entry_id, username),
+    )
+    conn.commit()
+    conn.close()

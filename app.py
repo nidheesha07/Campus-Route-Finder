@@ -12,6 +12,7 @@ from graph import CAMPUS_LOCATIONS, CAMPUS_EDGES, build_graph
 from dijkstra import find_shortest_path
 from users import username_exists, create_user, check_login
 from history import add_history, get_history, delete_history
+from database import init_db
 
 app = Flask(__name__)
 
@@ -20,10 +21,13 @@ app = Flask(__name__)
 # project this is fine.
 app.secret_key = "campus-route-finder-secret-key"
 
+# Create the database tables the moment the app starts, if they
+# don't already exist yet. Safe to run every single time.
+init_db()
+
 
 @app.route("/")
 def home():
-    # When someone visits the homepage, send them to the login page.
     return redirect(url_for("login"))
 
 
@@ -44,8 +48,6 @@ def register():
             error = "That username is already taken. Try another one."
         else:
             create_user(username, password)
-            # Send them to the login page with a success message,
-            # so they log in with the account they just created.
             return redirect(url_for("login", registered="1"))
 
     return render_template("register.html", error=error)
@@ -56,7 +58,6 @@ def login():
     error = None
     success = None
 
-    # If we just arrived here after registering, show a success message.
     if request.args.get("registered") == "1":
         success = "Account created! Please log in below."
 
@@ -77,7 +78,6 @@ def login():
 
 @app.route("/locations", methods=["GET", "POST"])
 def locations():
-    # If the user is not logged in, send them back to the login page.
     if "username" not in session:
         return redirect(url_for("login"))
 
@@ -108,8 +108,6 @@ def map_page():
     start = request.args.get("start")
     end = request.args.get("end")
 
-    # If someone visits /map directly without picking locations first,
-    # send them back to the locations page.
     if not start or not end or start not in CAMPUS_LOCATIONS or end not in CAMPUS_LOCATIONS:
         return redirect(url_for("locations"))
 
@@ -119,12 +117,9 @@ def map_page():
     start_name = CAMPUS_LOCATIONS[start]["name"]
     end_name = CAMPUS_LOCATIONS[end]["name"]
 
-    # If a path was found, save this search to the user's history.
     if path:
         add_history(session["username"], start_name, end_name, total_distance)
 
-    # Build a list of "point_a-point_b" strings for every step of the path.
-    # We add both directions because a connection can be drawn either way.
     path_edges = []
     if path:
         for i in range(len(path) - 1):
