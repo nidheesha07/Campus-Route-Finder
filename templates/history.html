@@ -5,6 +5,7 @@
     <title>Campus Route Finder - History</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     {% include 'header.html' %}
@@ -21,8 +22,13 @@
                 <div class="history-list">
                     {% for entry in entries %}
                         <div class="history-item">
-                            <div class="history-route">{{ entry.start_name }} → {{ entry.end_name }}</div>
-                            <div class="history-meta">{{ entry.distance }} meters &middot; {{ entry.timestamp }}</div>
+                            <div class="history-text">
+                                <div class="history-route">{{ entry.start_name }} → {{ entry.end_name }}</div>
+                                <div class="history-meta">{{ entry.distance }} meters &middot; {{ entry.timestamp }}</div>
+                            </div>
+                            <form method="POST" action="{{ url_for('delete_history_entry', entry_id=entry.id) }}" onsubmit="return confirm('Delete this route from your history?');">
+                                <button type="submit" class="delete-button" title="Delete this route">🗑️</button>
+                            </form>
                         </div>
                     {% endfor %}
                 </div>

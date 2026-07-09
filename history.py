@@ -5,6 +5,7 @@
 
 import json
 import os
+import uuid
 from datetime import datetime
 
 HISTORY_FILE = "history.json"
@@ -33,6 +34,7 @@ def add_history(username, start_name, end_name, distance):
     """
     Adds one route search to a user's history.
     The newest entry is always placed first in the list.
+    Each entry gets its own unique "id" so it can be deleted later.
     """
     history = load_history()
 
@@ -40,6 +42,7 @@ def add_history(username, start_name, end_name, distance):
         history[username] = []
 
     entry = {
+        "id": uuid.uuid4().hex,
         "start_name": start_name,
         "end_name": end_name,
         "distance": distance,
@@ -51,6 +54,40 @@ def add_history(username, start_name, end_name, distance):
 
 
 def get_history(username):
-    """Returns the list of past routes for one user, newest first."""
+    """
+    Returns the list of past routes for one user, newest first.
+
+    Older entries that were saved before the delete feature existed
+    won't have an "id" yet. This function checks for that and gives
+    them one automatically, so every entry can always be deleted.
+    """
     history = load_history()
-    return history.get(username, [])
+    entries = history.get(username, [])
+
+    needs_saving = False
+    for entry in entries:
+        if "id" not in entry:
+            entry["id"] = uuid.uuid4().hex
+            needs_saving = True
+
+    if needs_saving:
+        history[username] = entries
+        save_history(history)
+
+    return entries
+
+
+def delete_history(username, entry_id):
+    """
+    Removes one specific route from a user's history by its id.
+    If the id isn't found, nothing happens.
+    """
+    history = load_history()
+
+    if username not in history:
+        return
+
+    history[username] = [
+        entry for entry in history[username] if entry["id"] != entry_id
+    ]
+    save_history(history)

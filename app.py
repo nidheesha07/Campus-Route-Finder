@@ -11,7 +11,7 @@ from flask import Flask, render_template, request, redirect, session, url_for
 from graph import CAMPUS_LOCATIONS, CAMPUS_EDGES, build_graph
 from dijkstra import find_shortest_path
 from users import username_exists, create_user, check_login
-from history import add_history, get_history
+from history import add_history, get_history, delete_history
 
 app = Flask(__name__)
 
@@ -158,6 +158,15 @@ def history_page():
         username=session["username"],
         entries=entries,
     )
+
+
+@app.route("/history/delete/<entry_id>", methods=["POST"])
+def delete_history_entry(entry_id):
+    if "username" not in session:
+        return redirect(url_for("login"))
+
+    delete_history(session["username"], entry_id)
+    return redirect(url_for("history_page"))
 
 
 @app.route("/logout")

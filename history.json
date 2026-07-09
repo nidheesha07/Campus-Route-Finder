@@ -6,5 +6,42 @@
       "distance": 330,
       "timestamp": "08 Jul 2026, 09:29 PM"
     }
+  ],
+  "Nidheesha Hegde": [
+    {
+      "id": "58975b3be2cb4a519bd182ef98a85a72",
+      "start_name": "Main Gate",
+      "end_name": "Sports Complex",
+      "distance": 500,
+      "timestamp": "09 Jul 2026, 10:42 AM"
+    },
+    {
+      "id": "fdf29765735d40aab7938aa4d55423b6",
+      "start_name": "Main Gate",
+      "end_name": "Cafeteria",
+      "distance": 180,
+      "timestamp": "09 Jul 2026, 10:37 AM"
+    },
+    {
+      "start_name": "Main Gate",
+      "end_name": "Admin Block",
+      "distance": 270,
+      "timestamp": "09 Jul 2026, 10:24 AM",
+      "id": "e4f4f160b46048288fa7df26a77f764e"
+    },
+    {
+      "start_name": "Main Gate",
+      "end_name": "Admin Block",
+      "distance": 270,
+      "timestamp": "09 Jul 2026, 10:22 AM",
+      "id": "a1a208c570b2419a96c3ebcdf3c9d50d"
+    },
+    {
+      "start_name": "Main Gate",
+      "end_name": "Admin Block",
+      "distance": 270,
+      "timestamp": "09 Jul 2026, 10:13 AM",
+      "id": "17643063e764412aa0b0c1b4619ed788"
+    }
   ]
 }
