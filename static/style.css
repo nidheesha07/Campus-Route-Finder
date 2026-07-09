@@ -175,7 +175,7 @@ input:focus, select:focus {
 }
 
 .path-node {
-    fill: #e67e22;
+    fill: #fd7403;
 }
 
 .map-label {
@@ -338,4 +338,16 @@ input:focus, select:focus {
     font-size: 12px;
     color: #777;
     margin-top: 4px;
+}
+
+.route-summary {
+    font-family: 'Baloo 2', cursive;
+    font-size: 21px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    background: linear-gradient(90deg, #214e48, #214e48);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-top: 8px;
 }

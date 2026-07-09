@@ -15,8 +15,7 @@
                 <span class="app-icon">🗺️</span>
                 <h1>Your Route</h1>
                 {% if total_distance is not none %}
-                    <p class="tagline">{{ start_name }} → {{ end_name }} : {{ total_distance }} meters</p>
-                {% else %}
+                    <p class="route-summary">{{ start_name }} → {{ end_name }} : {{ total_distance }} meters</p>                {% else %}
                     <p class="tagline">No path could be found between these locations.</p>
                 {% endif %}
             </div>
@@ -45,11 +44,7 @@
                 {% endfor %}
             </svg>
 
-            <div class="legend">
-                <span><span class="legend-dot path-node"></span> On your route</span>
-                <span><span class="legend-dot map-node"></span> Other location</span>
-            </div>
-
+            
             <a class="secondary-button" href="{{ url_for('locations') }}">Choose Different Locations</a>
         </div>
     </div>
